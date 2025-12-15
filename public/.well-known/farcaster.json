@@ -1,0 +1,31 @@
+{
+  "accountAssociation": {
+    "header": "TODO_REPLACE_BASE64_HEADER",
+    "payload": "TODO_REPLACE_BASE64_PAYLOAD",
+    "signature": "TODO_REPLACE_BASE64_SIGNATURE"
+  },
+  "miniapp": {
+    "version": "1",
+    "name": "Mosaic",
+    "homeUrl": "https://example.com/",
+    "iconUrl": "https://example.com/assets/icon.png",
+    "splashImageUrl": "https://example.com/assets/splash.png",
+    "splashBackgroundColor": "#020617",
+    "subtitle": "Color your day",
+    "description": "A one-tap mood journal. Each day becomes a single pixel in a year grid\u2014creating a living mosaic of your emotions.",
+    "primaryCategory": "social",
+    "tags": [
+      "fun",
+      "simple",
+      "utility"
+    ],
+    "heroImageUrl": "https://example.com/assets/hero.png",
+    "ogTitle": "Mosaic",
+    "ogDescription": "A one-tap mood journal. Each day becomes a single pixel in a year grid\u2014creating a living mosaic of your emotions.",
+    "ogImageUrl": "https://example.com/assets/hero.png",
+    "screenshotUrls": [
+      "https://example.com/assets/hero.png"
+    ],
+    "noindex": true
+  }
+}
