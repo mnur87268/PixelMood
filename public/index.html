@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Pixel Mood</title>
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Mosaic" />
+  <meta property="og:description" content="A one-tap mood journal. Each day becomes a single pixel in a year grid—creating a living mosaic of your emotions." />
+  <meta property="og:image" content="https://example.com/assets/hero.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://example.com/" />
+
+  <!-- Farcaster Mini App -->
+  <meta name="fc:miniapp" content="{&quot;version&quot;:&quot;1&quot;,&quot;imageUrl&quot;:&quot;https://example.com/assets/embed-3x2.png&quot;,&quot;button&quot;:{&quot;title&quot;:&quot;Open&quot;,&quot;action&quot;:{&quot;type&quot;:&quot;launch_frame&quot;,&quot;url&quot;:&quot;https://example.com/&quot;}},&quot;splashImageUrl&quot;:&quot;https://example.com/assets/splash.png&quot;,&quot;splashBackgroundColor&quot;:&quot;#020617&quot;}" />
+
+  <!-- Backwards compatible Frame -->
+  <meta name="fc:frame" content="vNext" />
+  <meta name="fc:frame:image" content="https://example.com/assets/embed-3x2.png" />
+  <meta name="fc:frame:button:1" content="Open" />
+  <meta name="fc:frame:button:1:action" content="launch_frame" />
+  <meta name="fc:frame:button:1:target" content="https://example.com/" />
+  <meta name="fc:frame:splash_image" content="https://example.com/assets/splash.png" />
+  <meta name="fc:frame:splash_background_color" content="#020617" />
+
+  <style>
+    :root {
+      --bg: #070A12;
+      --panel: rgba(16, 20, 34, .72);
+      --line: rgba(236,241,255,.12);
+      --ink: #ECF1FF;
+      --muted: rgba(236,241,255,.62);
+      --shadow: rgba(0,0,0,.45);
+      --r: 22px;
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      background:
+        radial-gradient(900px 600px at 18% 22%, rgba(112,173,255,.22) 0%, rgba(112,173,255,0) 55%),
+        radial-gradient(900px 700px at 78% 18%, rgba(184,132,255,.22) 0%, rgba(184,132,255,0) 58%),
+        radial-gradient(900px 700px at 60% 86%, rgba(111,233,170,.18) 0%, rgba(111,233,170,0) 58%),
+        var(--bg);
+      color: var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    }
+    #app {
+      min-height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      box-sizing: border-box;
+    }
+    .wrap { width: min(640px, 100%); }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .title {
+      font-size: 28px;
+      font-weight: 950;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+    }
+    .sub {
+      margin-top: 4px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+    .pill {
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: .18em;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,.25);
+      box-shadow: 0 14px 40px var(--shadow);
+      user-select: none;
+    }
+    .pill.mini {
+      box-shadow: 0 0 0 8px rgba(184,132,255,.10) inset, 0 14px 40px var(--shadow);
+      border-color: rgba(184,132,255,.22);
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      backdrop-filter: blur(10px);
+      border-radius: var(--r);
+      padding: 16px;
+      box-shadow: 0 18px 60px var(--shadow);
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .year {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 950;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .yearText {
+      min-width: 90px;
+      text-align: center;
+      font-size: 14px;
+      color: rgba(236,241,255,.86);
+    }
+    .miniBtn {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      border: 1px solid rgba(236,241,255,.12);
+      background: rgba(0,0,0,.22);
+      color: rgba(236,241,255,.88);
+      font-size: 20px;
+      font-weight: 950;
+    }
+    .ghost {
+      border: 1px solid rgba(236,241,255,.14);
+      background: rgba(0,0,0,.18);
+      color: rgba(236,241,255,.86);
+      padding: 10px 12px;
+      border-radius: 999px;
+      font-weight: 900;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .gridWrap {
+      padding: 12px;
+      border-radius: 18px;
+      border: 1px dashed rgba(236,241,255,.16);
+      background: rgba(0,0,0,.16);
+    }
+    .grid {
+      --weeks: 53;
+      display: grid;
+      grid-template-columns: repeat(var(--weeks), 1fr);
+      grid-template-rows: repeat(7, 1fr);
+      gap: 6px;
+      width: 100%;
+    }
+    .px {
+      aspect-ratio: 1 / 1;
+      border: none;
+      border-radius: 8px;
+      background: rgba(36,44,70,.75);
+      box-shadow: 0 8px 18px rgba(0,0,0,.25);
+      transform: translateZ(0);
+      transition: transform .08s ease, filter .08s ease, outline .08s ease;
+      cursor: pointer;
+    }
+    .px:active { transform: scale(0.98); filter: brightness(1.05); }
+    .px.off {
+      background: rgba(36,44,70,.18);
+      box-shadow: none;
+      cursor: default;
+    }
+    .px.today {
+      outline: 2px solid rgba(255,255,255,.30);
+      outline-offset: 1px;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+      margin-top: 12px;
+    }
+    .lg {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 850;
+      font-size: 12px;
+      color: rgba(236,241,255,.78);
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(236,241,255,.12);
+      background: rgba(0,0,0,.18);
+    }
+    .sw {
+      width: 12px;
+      height: 12px;
+      border-radius: 4px;
+      display: inline-block;
+      box-shadow: 0 0 0 6px rgba(255,255,255,.06);
+    }
+    .ln { opacity: .9; }
+
+    .toast {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(236,241,255,.70);
+      padding: 12px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(236,241,255,.12);
+      background: rgba(0,0,0,.18);
+    }
+    .toast.pop { animation: pop .35s ease; }
+    @keyframes pop { 0%{transform:scale(1)} 35%{transform:scale(1.03)} 100%{transform:scale(1)} }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.55);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 14px;
+      box-sizing: border-box;
+    }
+    .modal.show { display: flex; }
+    .sheet {
+      width: min(640px, 100%);
+      border-radius: 26px;
+      border: 1px solid rgba(236,241,255,.14);
+      background: rgba(10,12,20,.92);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 22px 80px rgba(0,0,0,.55);
+      padding: 14px;
+    }
+    .sheetTop {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 6px 6px 10px;
+    }
+    .sheetTitle {
+      font-size: 14px;
+      font-weight: 950;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+      color: rgba(236,241,255,.86);
+    }
+    .x {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      border: 1px solid rgba(236,241,255,.14);
+      background: rgba(0,0,0,.25);
+      color: rgba(236,241,255,.86);
+      font-weight: 950;
+      font-size: 14px;
+    }
+
+    .palette {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 8px 4px 10px;
+    }
+    .mood {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 12px;
+      border-radius: 18px;
+      border: 1px solid rgba(236,241,255,.12);
+      background: rgba(0,0,0,.20);
+      color: rgba(236,241,255,.88);
+      text-align: left;
+      font-weight: 900;
+    }
+    .mood .dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 6px;
+      background: var(--c);
+      box-shadow: 0 0 0 8px rgba(255,255,255,.06);
+    }
+    .mood .em { width: 28px; text-align: center; }
+    .mood .nm { letter-spacing: .02em; }
+    .mood.active {
+      outline: 2px solid rgba(255,255,255,.22);
+      border-color: rgba(255,255,255,.18);
+    }
+
+    .danger {
+      width: 100%;
+      margin-top: 6px;
+      padding: 12px 12px;
+      border-radius: 18px;
+      border: 1px solid rgba(236,241,255,.12);
+      background: rgba(255,99,132,.14);
+      color: rgba(236,241,255,.90);
+      font-weight: 950;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <script type="module" src="./script.js"></script>
+</body>
+</html>
